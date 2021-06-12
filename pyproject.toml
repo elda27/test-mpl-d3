@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "testmpld3"
+version = "0.1.0"
+description = "Sample code of the mpld3 with typescript and react."
+authors = ["elda27 <kaz.birdstick@gmail.com>"]
+license = "Apache 2.0"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+mpld3 = "^0.5.2"
+seaborn = "^0.11.1"
+fastapi = "^0.65.1"
+scikit-learn = "^0.24.2"
+uvicorn = "^0.14.0"
+aiofiles = "^0.7.0"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.9.2"
+flakehell = "^0.9.0"
+autopep8 = "^1.5.7"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
