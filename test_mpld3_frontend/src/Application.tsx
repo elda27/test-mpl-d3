@@ -1,8 +1,6 @@
 import * as React from "react"
 import axios from "axios"
 import mpld3 from "mpld3"
-const plotTypes = ["pairplot"]
-
 // interface PlotResponse {
 //   spec: object // eslint-disable-line @typescript-eslint/ban-types
 //   process: object // eslint-disable-line @typescript-eslint/ban-types
@@ -10,7 +8,8 @@ const plotTypes = ["pairplot"]
 // }
 
 export const Application: React.FC = () => {
-  const [plotType, setPlotType] = React.useState<string | null>(plotTypes[0])
+  const [plotType, setPlotType] = React.useState<string | null>(null)
+  const [plotTypes, setPlotTypes] = React.useState<string[] | null>(null)
   const [dataType, setDataType] = React.useState<string | null>(null)
   const [dataTypes, setDataTypes] = React.useState<string[] | null>(null)
 
@@ -23,6 +22,12 @@ export const Application: React.FC = () => {
       if (!dataType && newDataTypes) {
         setDataType(newDataTypes[0])
       }
+
+      const newPlotTypes = (await axios.get<string[]>("/list-plot")).data
+      setPlotTypes(newPlotTypes)
+      if (!plotType && newPlotTypes) {
+        setPlotType(newPlotTypes[0])
+      }
     }
 
     fetch()
@@ -34,7 +39,9 @@ export const Application: React.FC = () => {
     }
 
     const fetch = async () => {
-      const response = await axios.get<string>(`/${plotType}?dataType=${dataType}`)
+      const response = await axios.get<string>(
+        `/${plotType}?dataType=${dataType}`
+      )
       // const { spec, process, clearElem } = response.data
       mpld3.draw_figure(drawingCanvasId, response.data, undefined, true)
     }
@@ -63,18 +70,19 @@ export const Application: React.FC = () => {
         </select>
         {/* Plot type */}
         <select
-          value={plotType ?? plotTypes[0]}
+          value={plotType ?? ""}
           onChange={(event) => {
             setPlotType(event.currentTarget.value)
           }}
         >
-          {plotTypes.map((type) => {
-            return (
-              <option value={type} key={type}>
-                {type}
-              </option>
-            )
-          })}
+          {plotTypes &&
+            plotTypes.map((type) => {
+              return (
+                <option value={type} key={type}>
+                  {type}
+                </option>
+              )
+            })}
         </select>
       </div>
       <div id={drawingCanvasId}></div>

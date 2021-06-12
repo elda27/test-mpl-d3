@@ -86,7 +86,7 @@ async def get_data_list():
 
 @ app.get('/list-plot', response_model=List[str])
 async def get_plot_list():
-    return ['pairplot']
+    return ['histplot', 'histplot2d', 'kdeplot', 'kdeplot2d', 'pairplot']
 
 
 @ app.get('/pairplot')
@@ -96,3 +96,41 @@ async def pairplot(data: pd.DataFrame = fastapi.Depends(get_data)):
         ax.xaxis.set_ticks_position('bottom')
         ax.yaxis.set_ticks_position('left')
     return convert_d3_object(grid.fig)
+
+
+@ app.get('/pairplot')
+async def pairplot(data: pd.DataFrame = fastapi.Depends(get_data)):
+    grid = sns.pairplot(data=data)
+    for ax in grid.axes.flat:
+        ax.xaxis.set_ticks_position('bottom')
+        ax.yaxis.set_ticks_position('left')
+    return convert_d3_object(grid.fig)
+
+
+@ app.get('/histplot')
+async def pairplot(data: pd.DataFrame = fastapi.Depends(get_data)):
+    fig, ax = plt.subplots()
+    sns.histplot(data=data, x=data.columns[0], ax=ax)
+    return convert_d3_object(fig)
+
+
+@ app.get('/histplot2d')
+async def pairplot(data: pd.DataFrame = fastapi.Depends(get_data)):
+    fig, ax = plt.subplots()
+    sns.histplot(data=data, x=data.columns[0], y=data.columns[1], ax=ax)
+    return convert_d3_object(fig)
+
+
+@ app.get('/kdeplot')
+async def pairplot(data: pd.DataFrame = fastapi.Depends(get_data)):
+    fig, ax = plt.subplots()
+    sns.kdeplot(data=data, x=data.columns[0], ax=ax)
+    return convert_d3_object(fig)
+
+
+@ app.get('/kdeplot2d')
+async def pairplot(data: pd.DataFrame = fastapi.Depends(get_data)):
+    fig, ax = plt.subplots()
+    sns.kdeplot(data=data, x=data.columns[0],
+                y=data.columns[1], shade=True, ax=ax)
+    return convert_d3_object(fig)
